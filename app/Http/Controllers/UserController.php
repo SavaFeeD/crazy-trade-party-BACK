@@ -23,9 +23,7 @@ class UserController extends Controller {
 
     public function store(StoreRequest $request) {
 
-        $user = User::create($request->all());
-        $user->slug = Str::random(10);
-        $user->save();
+        User::create($request->all());
 
         return response()->json([
             'status' => true,
@@ -60,5 +58,25 @@ class UserController extends Controller {
                 ]
             ], 402);
         }
+    }
+
+    public function get_user($slug) {
+        try {
+            $user = User::where('slug', $slug)->first();
+
+            if (!$user)
+                throw new NotFoundHttpException;
+
+            return response()->json([
+                'status' => true,
+                'user' => $user
+            ], 200);
+        } catch (NotFoundHttpException $error) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Нет пользователя с таким слагом'
+            ], 404);
+        }
+
     }
 }

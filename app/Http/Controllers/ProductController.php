@@ -10,4 +10,8 @@ class ProductController extends Controller
     public function index() {
         return response()->json(Product::all(), 200);
     }
+
+    public function addViewsCount(Request $request) {
+        return Product::incrementViewsCount($request);
+    }
 }
