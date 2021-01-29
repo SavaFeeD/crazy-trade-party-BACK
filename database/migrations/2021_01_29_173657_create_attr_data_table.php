@@ -15,6 +15,9 @@ class CreateAttrDataTable extends Migration
     {
         Schema::create('attr_data', function (Blueprint $table) {
             $table->id();
+            $table->integer('attr_id');
+            $table->foreign('attr_id')->references('id')->on('attr_name');
+            $table->string('value');
             $table->timestamps();
         });
     }

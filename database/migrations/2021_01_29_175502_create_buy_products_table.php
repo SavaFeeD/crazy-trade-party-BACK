@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttrToProductsTable extends Migration
+class CreateBuyProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateAttrToProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('attr_to_products', function (Blueprint $table) {
+        Schema::create('buy_products', function (Blueprint $table) {
             $table->id();
-            $table->integer('attr_data_id');
-            $table->foreign('attr_data_id')->references('id')->on('attr_data');
-            $table->integer('product_id');
-            $table->foreign('product_id')->references('id')->on('product');
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ class CreateAttrToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attr_to_products');
+        Schema::dropIfExists('buy_products');
     }
 }
