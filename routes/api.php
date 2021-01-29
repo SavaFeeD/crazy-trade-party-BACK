@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\AttrNameController;
 
 Route::get('/', function () {
     return response()->json([
-        'message' => 'Work!'
+        'message' => 'API Crazy Trade Party!'
     ]);
 });
 
@@ -19,7 +20,12 @@ Route::post('register', [UserController::class, 'store']);
 Route::get('logout', [UserController::class, 'logout'])->middleware('auth:api');
 Route::get('get_user/{slug}', [UserController::class, 'get_user']);
 
-Route::post('add_viewCount', [ProductController::class, 'addViewsCount']);
+Route::get('product/getOne/{id}', [ProductController::class, 'getOne']);
+Route::post('product/add_viewCount', [ProductController::class, 'addViewsCount']);
+Route::get('product/attr/createName', [AttrNameController::class, 'store']);
 
-Route::post('add_to_wl', [WishlistController::class, 'add']);
-Route::get('getWL/{user_id}', [WishlistController::class, 'getWL']);
+Route::post('wl/add', [WishlistController::class, 'add']);
+Route::get('wl/getUser/{user_id}', [WishlistController::class, 'getWLForUser']);
+Route::get('wl/delete/{id}', [WishlistController::class, 'delete']);
+
+
