@@ -15,10 +15,10 @@ class CreateAttrToProductsTable extends Migration
     {
         Schema::create('attr_to_products', function (Blueprint $table) {
             $table->id();
-            $table->integer('attr_data_id');
+            $table->unsignedBigInteger('attr_data_id');
             $table->foreign('attr_data_id')->references('id')->on('attr_data');
-            $table->integer('product_id');
-            $table->foreign('product_id')->references('id')->on('product');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
     }

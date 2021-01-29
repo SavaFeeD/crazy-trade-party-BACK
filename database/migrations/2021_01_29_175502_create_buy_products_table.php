@@ -15,6 +15,10 @@ class CreateBuyProductsTable extends Migration
     {
         Schema::create('buy_products', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('attr_to_product_id');
+            $table->foreign('attr_to_product_id')->references('id')->on('attr_to_products');
             $table->timestamps();
         });
     }
