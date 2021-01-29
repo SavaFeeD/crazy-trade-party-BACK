@@ -22,8 +22,9 @@ class UserController extends Controller {
     }
 
     public function store(StoreRequest $request) {
-
-        User::create($request->all());
+        $user = User::create($request->all());
+        $user->slug = Str::random(10);
+        $user->save();
 
         return response()->json([
             'status' => true,

@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('/', function () {
     return response()->json([
@@ -20,3 +20,6 @@ Route::get('logout', [UserController::class, 'logout'])->middleware('auth:api');
 Route::get('get_user/{slug}', [UserController::class, 'get_user']);
 
 Route::post('add_viewCount', [ProductController::class, 'addViewsCount']);
+
+Route::post('add_to_wl', [WishlistController::class, 'add']);
+Route::get('getWL/{user_id}', [WishlistController::class, 'getWL']);
