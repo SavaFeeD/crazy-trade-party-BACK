@@ -25,7 +25,7 @@ Route::post('product/add_viewCount', [ProductController::class, 'addViewsCount']
 Route::get('product/attr/createName', [AttrNameController::class, 'store']);
 
 Route::post('wl/add', [WishlistController::class, 'add']);
-Route::get('wl/getUser/{user_id}', [WishlistController::class, 'getWLForUser']);
+Route::get('wl/getUser/{slug}', [WishlistController::class, 'getWLForUser']);
 Route::get('wl/delete/{id}', [WishlistController::class, 'delete']);
 
 

@@ -22,7 +22,8 @@ class AttrToProductFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'attr_data_id' => rand(1, 20),
+            'product_id' => rand(1, 50)
         ];
     }
 }

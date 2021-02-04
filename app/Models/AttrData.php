@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AttrData extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['attr_id', 'value'];
 }

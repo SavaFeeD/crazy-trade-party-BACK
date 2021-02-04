@@ -47,11 +47,17 @@ class User extends Authenticatable
             if (!$user or !Hash::check($request->password, $user->password))
                 throw new NotFoundHttpException;
 
+            $token = $user->generateToken();
+
+            unset($user->password);
+            unset($user->api_token);
+
             return response()->json([
                 'status' => true,
                 'body' => [
                     'message' => 'Авторизация прошла успешно',
-                    'token' => $user->generateToken()
+                    'token' => $token,
+                    'user' => $user
                 ]
             ]);
 

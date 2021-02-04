@@ -22,7 +22,8 @@ class BuyProductFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => rand(1, 10),
+            'attr_to_product_id' => rand(1, 20)
         ];
     }
 }

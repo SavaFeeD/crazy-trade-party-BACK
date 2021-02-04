@@ -22,7 +22,8 @@ class AttrDataFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'attr_id' => rand(1, 10),
+            'value' => $this->faker->realText(15)
         ];
     }
 }

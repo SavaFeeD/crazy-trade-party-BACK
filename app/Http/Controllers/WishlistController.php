@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WLRequest;
 use App\Models\Product;
 use App\Models\Wishlist;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,21 +25,23 @@ class WishlistController extends Controller
         ], 200);
     }
 
-    public function getWLForUser($user_id) {
+    public function getWLForUser($slug) {
         try {
             $data = [
-                'user_id' => $user_id
+                'slug' => $slug
             ];
 
             $validated = Validator::make($data, [
-                'user_id' => 'required|integer'
+                'slug' => 'required'
             ]);
 
             if ($validated->fails())
                 throw new NotFoundHttpException;
 
-            $wl_list = collect(Wishlist::all())->filter(function ($item) use($user_id) {
-                return $item->user_id."" === $user_id;
+            $user = User::where('slug', $slug)->first();
+
+            $wl_list = collect(Wishlist::all())->filter(function ($item) use($user) {
+                return $item->user_id === $user->id;
             });
 
             $id_list = collect();
@@ -59,7 +62,7 @@ class WishlistController extends Controller
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Ошибка с ID пользователя'
+                    'message' => 'Ошибка с SLUG пользователя'
                 ]
             ], 400);
         }

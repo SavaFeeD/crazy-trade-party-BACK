@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AttrToProduct extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['attr_data_id', 'product_id'];
 }
