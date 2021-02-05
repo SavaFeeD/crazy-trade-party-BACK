@@ -9,29 +9,56 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use function GuzzleHttp\Promise\all;
 
 class WishlistController extends Controller
 {
+    public function index() {
+        return response()->json(Wishlist::all(), 200);
+    }
+
     public function add(WLRequest $request) {
-        $wl = Wishlist::create($request->all());
-        return response()->json($wl, 200);
+        try {
+            $user = User::where('api_token', $request->bearerToken())->first();
+            if ($user->id."" != $request->user_id)
+                throw new NotFoundHttpException;
+
+            Wishlist::create($request->all());
+            return response()->json([
+                'status' => true,
+                'body' => [
+                    'message' => 'Успешно добавлено'
+                ]
+            ], 200);
+        } catch (NotFoundHttpException $error) {
+            return response()->json([
+                'status' => false,
+                'body' => [
+                    'message' => 'Вы не можете добавлять другим товары в вишлист!'
+                ]
+            ], 403);
+        }
     }
 
     public function delete($id) {
-        Wishlist::where('id', $id)->delete();
+
+        $res = Wishlist::where('id', $id)->delete();
+        if (!$res)
+            return response()->json([
+                'status' => false,
+                'body' => [
+                    'message' => 'Записи с таким id не существует'
+                ]
+            ], 404);
+
         return response()->json([
             'message' => 'Deleted'
-        ], 200);
+        ], 202);
     }
 
     public function getWLForUser($slug) {
         try {
-            $data = [
-                'slug' => $slug
-            ];
 
-            $validated = Validator::make($data, [
+            $validated = Validator::make(['slug' => $slug], [
                 'slug' => 'required'
             ]);
 
@@ -39,6 +66,9 @@ class WishlistController extends Controller
                 throw new NotFoundHttpException;
 
             $user = User::where('slug', $slug)->first();
+
+            if ($user === null)
+                throw new NotFoundHttpException;
 
             $wl_list = collect(Wishlist::all())->filter(function ($item) use($user) {
                 return $item->user_id === $user->id;

@@ -23,7 +23,8 @@ class BuyProductFactory extends Factory
     {
         return [
             'user_id' => rand(1, 10),
-            'attr_to_product_id' => rand(1, 20)
+            'attr_to_product_id' => rand(1, 20),
+            'numbers' => rand(1, 20)
         ];
     }
 }

@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('slug')->nullable()->unique();
             $table->string('password');
             $table->string('img')->nullable();
+            $table->bigInteger('crazy_coins')->default(0);
             $table->string('api_token')->nullable();
         });
     }

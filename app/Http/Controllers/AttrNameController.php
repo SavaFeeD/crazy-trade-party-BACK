@@ -36,9 +36,9 @@ class AttrNameController extends Controller
             ]);
         } catch (NotFoundHttpException $error) {
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'body' => [
-                    'attr_name' => $attr_name
+                    'message' => 'Атрибут не найден'
                 ]
             ], 404);
         }
