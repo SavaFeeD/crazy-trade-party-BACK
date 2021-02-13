@@ -84,16 +84,4 @@ class Product extends Model
             ], 404);
         }
     }
-
-    static public function getProductList($id_list)
-    {
-        $collection = collect([]);
-
-        foreach ($id_list as $id)
-            $collection->push(collect(Product::all())->filter(function ($item) use ($id) {
-                return $item->id === $id;
-            })->first());
-
-        return $collection->all();
-    }
 }

@@ -79,7 +79,7 @@ class WishlistController extends Controller
                 $id_list->push($wl->product_id);
             }
 
-            $products = Product::getProductList($id_list->all());
+            $products = Controller::getDataList(Product::class, $id_list->all());
 
             return response()->json([
                 'status' => true,

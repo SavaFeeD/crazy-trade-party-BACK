@@ -51,8 +51,6 @@ class BuyProductController extends Controller
                 ]);
             }
 
-//            $products = Product::getProductList($id_list->all());
-
             return response()->json([
                 'status' => true,
                 'body' => [
