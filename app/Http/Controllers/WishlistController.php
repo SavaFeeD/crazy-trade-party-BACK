@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class WishlistController extends Controller
 {
@@ -22,6 +23,15 @@ class WishlistController extends Controller
             if ($user->id."" != $request->user_id)
                 throw new NotFoundHttpException;
 
+            $product = Product::where('id', $request->product_id)->first();
+            if (!$product)
+                return response()->json([
+                    'status' => false,
+                    'body' => [
+                        'message' => 'Такого товара не существует'
+                    ]
+                ], 404);
+
             Wishlist::create($request->all());
             return response()->json([
                 'status' => true,
@@ -33,26 +43,43 @@ class WishlistController extends Controller
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Вы не можете добавлять другим товары в вишлист!'
+                    'message' => 'Вы не можете добавлять другим товары в wl!'
                 ]
             ], 403);
         }
     }
 
-    public function delete($id) {
+    public function delete(Request $request, $id) {
+        try {
+            $user = User::where('api_token', $request->bearerToken())->first();
+            $wl = Wishlist::where('id', $id)->first();
 
-        $res = Wishlist::where('id', $id)->delete();
-        if (!$res)
+            if (!$wl)
+                return response()->json([
+                    'status' => false,
+                    'body' => [
+                        'message' => 'Записи с таким id не существует'
+                    ]
+                ], 404);
+
+            if ($user->id != $wl->user_id)
+                throw new RouteNotFoundException;
+
+            $wl->delete();
+
+            return response()->json([
+                'message' => 'Deleted'
+            ], 202);
+
+        } catch (RouteNotFoundException $error) {
+
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Записи с таким id не существует'
+                    'message' => 'Токен не принадлежит пользователю который создал запись в wl'
                 ]
-            ], 404);
-
-        return response()->json([
-            'message' => 'Deleted'
-        ], 202);
+            ], 300);
+        }
     }
 
     public function getWLForUser($slug) {
