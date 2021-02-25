@@ -28,7 +28,6 @@ class ProductFactory extends Factory
             'description' => $this->faker->realText(70),
             'price' => rand(1, 60000),
             'views_count' => rand(0, 200),
-            'numbers' => rand(0, 50)
         ];
     }
 }

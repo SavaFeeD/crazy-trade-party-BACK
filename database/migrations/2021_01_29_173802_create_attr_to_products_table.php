@@ -19,6 +19,7 @@ class CreateAttrToProductsTable extends Migration
             $table->foreign('attr_data_id')->references('id')->on('attr_data');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
+            $table->integer('numbers')->default(0);
             $table->timestamps();
         });
     }

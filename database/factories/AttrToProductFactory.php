@@ -23,7 +23,8 @@ class AttrToProductFactory extends Factory
     {
         return [
             'attr_data_id' => rand(1, 20),
-            'product_id' => rand(1, 50)
+            'product_id' => rand(1, 50),
+            'numbers' => rand(0, 50)
         ];
     }
 }
