@@ -26,7 +26,8 @@ class User extends Authenticatable
         'password',
         'slug',
         'img',
-        'crazy_coins'
+        'crazy_coins',
+        'role'
     ];
 
     public $timestamps = false;

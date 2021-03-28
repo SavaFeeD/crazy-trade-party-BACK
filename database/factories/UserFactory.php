@@ -28,7 +28,8 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('sava123'),
             'slug' => Str::random(10),
-            'crazy_coins' => rand(0, 10000)
+            'crazy_coins' => rand(0, 10000),
+            'role' => 'user'
         ];
     }
 }

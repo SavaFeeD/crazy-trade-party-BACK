@@ -7,6 +7,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AttrNameController;
 use App\Http\Controllers\BuyProductController;
 use App\Http\Controllers\RatingProductController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return response()->json([
@@ -19,6 +20,8 @@ Route::get('products', [ProductController::class, 'index']);
 Route::get('wishlist', [WishlistController::class, 'index'])->middleware('auth:api');
 Route::get('buy', [BuyProductController::class, 'index'])->middleware('auth:api');
 Route::get('rating', [RatingProductController::class, 'index']);
+Route::get('category', [CategoryController::class, 'index']);
+
 
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'store']);
@@ -37,3 +40,5 @@ Route::get('buy/user/{slug}', [BuyProductController::class, 'user'])->middleware
 Route::post('buy/product', [BuyProductController::class, 'user'])->middleware('auth:api');
 
 Route::get('rating/top/absolute', [RatingProductController::class, 'topAbsoluteProduct']);
+
+Route::post('category/create', [CategoryController::class, 'create']);
