@@ -24,21 +24,21 @@ class WishlistController extends Controller
         ], 200);
     }
 
-    public function getWLForUser($user_id) {
+    public function getWLForUser($user_slug) {
         try {
             $data = [
-                'user_id' => $user_id
+                'user_slug' => $user_slug
             ];
 
             $validated = Validator::make($data, [
-                'user_id' => 'required|integer'
+                'user_slug' => 'required|integer'
             ]);
 
             if ($validated->fails())
                 throw new NotFoundHttpException;
 
-            $wl_list = collect(Wishlist::all())->filter(function ($item) use($user_id) {
-                return $item->user_id."" === $user_id;
+            $wl_list = collect(Wishlist::all())->filter(function ($item) use($user_slug) {
+                return $item->user_slug."" === $user_slug;
             });
 
             $id_list = collect();

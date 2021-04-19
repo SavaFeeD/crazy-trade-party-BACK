@@ -51,7 +51,8 @@ class User extends Authenticatable
                 'status' => true,
                 'body' => [
                     'message' => 'Авторизация прошла успешно',
-                    'token' => $user->generateToken()
+                    'token' => $user->generateToken(),
+                    'user' => $user
                 ]
             ]);
 
