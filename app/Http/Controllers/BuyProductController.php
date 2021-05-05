@@ -15,7 +15,7 @@ use App\Models\User;
 class BuyProductController extends Controller
 {
     public function index() {
-        return response()->json([BuyProduct::all(), 200]);
+        return response()->json(BuyProduct::all(), 200);
     }
 
     public function user($slug) {
@@ -38,17 +38,9 @@ class BuyProductController extends Controller
             });
 
             $list = collect();
+
             foreach ($buy_list->all() as $bl) {
-                $list->push([
-                    'product' => Product::where('id', AttrToProduct::where('id', $bl->attr_to_product_id)->first()->product_id)->first(),
-                    'attr' => [
-                        'name' => AttrName::where('id',
-                            AttrData::where('id',
-                                AttrToProduct::where('id', $bl->attr_to_product_id)->first()->attr_data_id)->first()->attr_id)->first()->name,
-                        'value' => AttrData::where('id',
-                                AttrToProduct::where('id', $bl->attr_to_product_id)->first()->attr_data_id)->first()->value
-                    ]
-                ]);
+                $list->push(Product::where('id', $bl->product_id)->first());
             }
 
             return response()->json([
@@ -66,5 +58,14 @@ class BuyProductController extends Controller
                 ]
             ], 400);
         }
+    }
+
+    public function buy() {
+        return response()->json([
+            'status' => false,
+            'body' => [
+                'message' => 'Не реализовано'
+            ]
+        ], 400);
     }
 }

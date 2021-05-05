@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Models\File;
 
 class Product extends Model
 {
@@ -16,7 +17,8 @@ class Product extends Model
         'description',
         'price',
         'views_count',
-        'img'
+        'img',
+        'dataset'
     ];
 
     static public function incrementViewsCount($request): \Illuminate\Http\JsonResponse
@@ -46,5 +48,9 @@ class Product extends Model
         }
     }
 
-
+    static public function store($data) {
+        $dataset_name = File::setPublicStore($data->dataset);
+        $img_name = File::setPublicStore($data->img);
+        // $attr_name = AttrName::create($request->all());
+    }
 }

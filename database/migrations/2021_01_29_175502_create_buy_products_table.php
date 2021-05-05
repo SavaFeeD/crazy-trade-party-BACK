@@ -17,9 +17,8 @@ class CreateBuyProductsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('attr_to_product_id');
-            $table->foreign('attr_to_product_id')->references('id')->on('attr_to_products');
-            $table->integer('numbers');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
     }

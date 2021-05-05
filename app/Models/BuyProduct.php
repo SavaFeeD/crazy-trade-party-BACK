@@ -9,5 +9,5 @@ class BuyProduct extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'attr_to_product_id', 'numbers'];
+    protected $fillable = ['user_id', 'product_id'];
 }

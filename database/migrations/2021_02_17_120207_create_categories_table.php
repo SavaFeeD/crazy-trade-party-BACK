@@ -17,6 +17,18 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('name')->unique();
         });
+
+        \Illuminate\Support\Facades\DB::table('categories')->insert([
+            'name' => 'NLP',
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('categories')->insert([
+            'name' => 'Regression',
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('categories')->insert([
+            'name' => 'Classification',
+        ]);
     }
 
     /**
