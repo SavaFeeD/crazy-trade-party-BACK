@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\AttrData;
+use App\Models\Wishlist;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AttrDataFactory extends Factory
+class WishlistFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = AttrData::class;
+    protected $model = Wishlist::class;
 
     /**
      * Define the model's default state.
@@ -22,7 +22,8 @@ class AttrDataFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => rand(1, 10),
+            'product_id' => rand(1, 50)
         ];
     }
 }

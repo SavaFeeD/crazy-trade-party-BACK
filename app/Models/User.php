@@ -25,7 +25,9 @@ class User extends Authenticatable
         'login',
         'password',
         'slug',
-        'img'
+        'img',
+        'crazy_coins',
+        'role'
     ];
 
     public $timestamps = false;
@@ -47,11 +49,20 @@ class User extends Authenticatable
             if (!$user or !Hash::check($request->password, $user->password))
                 throw new NotFoundHttpException;
 
+            $token = $user->generateToken();
+
+            unset($user->password);
+            unset($user->api_token);
+
             return response()->json([
                 'status' => true,
                 'body' => [
                     'message' => 'Авторизация прошла успешно',
+<<<<<<< HEAD
                     'token' => $user->generateToken(),
+=======
+                    'token' => $token,
+>>>>>>> work
                     'user' => $user
                 ]
             ]);

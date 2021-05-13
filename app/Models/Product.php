@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Models\File;
+use App\Models\ProductIsCategory;
 
 class Product extends Model
 {
@@ -16,8 +18,8 @@ class Product extends Model
         'description',
         'price',
         'views_count',
-        'numbers',
-        'img'
+        'img',
+        'dataset'
     ];
 
     static public function incrementViewsCount($request): \Illuminate\Http\JsonResponse
@@ -47,53 +49,38 @@ class Product extends Model
         }
     }
 
-    static public function decrementNumbers($request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $product = Product::where('id', $request->id)->first();
-            if (!$product)
-                throw new NotFoundHttpException;
-
-            $after_product_numbers = $product->numbers - $request->num;
-
-            if ($after_product_numbers < 0)
-                return response()->json([
-                    'status' => false,
-                    'body' => [
-                        'message' => 'У нас недостаточно товаров (осталось '.$product->numbers.'шт.)',
-                    ]
-                ]);
-
-            $product->numbers = $after_product_numbers;
-            $product->save();
-
-            return response()->json([
-                'status' => true,
-                'body' => [
-                    'message' => 'Спасибо за покупку!',
-                    'number' => $request->num,
-                    'product' => $product
-                ]
-            ], 200);
-        } catch (NotFoundHttpException $error) {
-            return response()->json([
-                'status' => false,
-                'body' => [
-                    'message' => 'Такого товара не существует'
-                ]
-            ], 404);
+    static public function store($data, $category) {
+        $dataset_name = File::setPublicStore($data['dataset']);
+        $dataset_url = File::getPublicUrl($dataset_name);
+        $data['dataset'] = $dataset_url;
+        if (isset($data['img'])) {
+          $img_name = File::setPublicStore($data['img']);
+          $img_url = File::getPublicUrl($img_name);
+          $data['img'] = $img_url;
         }
-    }
+        try {
+          $product = Product::create($data);
+          if ($category != 'no-cat') {
+            collect($category)->map(function ($cat) use($product) {
+              ProductIsCategory::create([
+                "product_id" => $product->id,
+                "category_id" => $cat
+              ]);
+            });
+          }
+        } catch (Exception $e) {
+          return [
+            "status" => false,
+            "message" => 'Произошла ошибка во время создания товара',
+            "code" => 500
+          ];
+        }
 
-    static public function getProductList($id_list)
-    {
-        $collection = collect([]);
-
-        foreach ($id_list as $id)
-            $collection->push(collect(Product::all())->filter(function ($item) use ($id) {
-                return $item->id === $id;
-            })->first());
-
-        return $collection->all();
+        return [
+          "status" => true,
+          "message" => 'Товар создан',
+          "product_id" => $product->id,
+          "code" => 200
+        ];
     }
 }

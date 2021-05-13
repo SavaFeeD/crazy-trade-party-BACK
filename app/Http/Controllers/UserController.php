@@ -68,6 +68,9 @@ class UserController extends Controller {
             if (!$user)
                 throw new NotFoundHttpException;
 
+            unset($user->password);
+            unset($user->api_token);
+
             return response()->json([
                 'status' => true,
                 'user' => $user

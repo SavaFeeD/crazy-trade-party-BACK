@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\AttrToProduct;
+use App\Models\BuyProduct;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AttrToProductFactory extends Factory
+class BuyProductFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = AttrToProduct::class;
+    protected $model = BuyProduct::class;
 
     /**
      * Define the model's default state.
@@ -22,7 +22,8 @@ class AttrToProductFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => rand(1, 10),
+            'product_id' => rand(1, 20)
         ];
     }
 }

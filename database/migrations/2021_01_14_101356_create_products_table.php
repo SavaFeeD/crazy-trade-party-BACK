@@ -20,8 +20,8 @@ class CreateProductsTable extends Migration
             $table->text('description')->default('');
             $table->integer('price')->default(0);
             $table->integer('views_count')->default(0);
-            $table->integer('numbers')->default(0);
             $table->string('img')->nullable();
+            $table->string('dataset')->default('http://127.0.0.1:8000/storage/upload/nQuQCMUCHpjt0KXl3yLXWEjzBZew7DfrBT8kLPLR.csv');
             $table->timestamps();
         });
     }
