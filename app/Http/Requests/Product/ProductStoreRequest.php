@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests\Product;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ApiBaseRequest;
 
-class ProductStoreRequest extends FormRequest
+class ProductStoreRequest extends ApiBaseRequest
 {
     public function rules()
     {
         return [
-          "name" => ['required', 'size:225'],
-          "short_description" => 'size:225',
-          "description" => 'size:225',
+          "user_id" => ['required', 'integer'],
+          "name" => 'required',
           "price" => 'integer',
           "dataset" => 'required'
         ];

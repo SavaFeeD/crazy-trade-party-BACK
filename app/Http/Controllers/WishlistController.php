@@ -17,6 +17,52 @@ class WishlistController extends Controller
         return response()->json(Wishlist::all(), 200);
     }
 
+    public function user_product_wishlist($slug, $id_product) {
+        try {
+
+            $validated = Validator::make(['slug' => $slug, 'id_product' => $id_product], [
+                'slug' => 'required',
+                'id_product' => 'required'
+            ]);
+
+            if ($validated->fails())
+                throw new NotFoundHttpException;
+
+            $user = User::where('slug', $slug)->first();
+
+            if ($user === null)
+                throw new NotFoundHttpException;
+
+            $wl_list = collect(Wishlist::all())->filter(function ($item) use($user) {
+                return $item->user_id === $user->id;
+            });
+
+            $list = collect();
+            $check = false;
+            foreach ($wl_list->all() as $wl) {
+                $product = Product::where('id', $wl->product_id)->first();
+                if ($product->id == $id_product) {
+                  $check = true;
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'body' => [
+                    'check' => $check
+                ]
+            ], 200);
+
+        } catch (NotFoundHttpException $error) {
+            return response()->json([
+                'status' => false,
+                'body' => [
+                    'message' => 'Введите все параметры правильно'
+                ]
+            ], 400);
+        }
+    }
+
     public function add(WLRequest $request) {
         try {
             $user = User::where('api_token', $request->bearerToken())->first();
@@ -52,20 +98,13 @@ class WishlistController extends Controller
     public function delete(Request $request, $id) {
         try {
             $user = User::where('api_token', $request->bearerToken())->first();
-            $wl = Wishlist::where('id', $id)->first();
+            $wl = collect(Wishlist::where('product_id', $id)->get()->all());
 
-            if (!$wl)
-                return response()->json([
-                    'status' => false,
-                    'body' => [
-                        'message' => 'Записи с таким id не существует'
-                    ]
-                ], 404);
-
-            if ($user->id != $wl->user_id)
-                throw new RouteNotFoundException;
-
-            $wl->delete();
+            $wl->map(function ($item) use($user) {
+              if ($item->user_id == $user->id) {
+                $item->delete();
+              }
+            });
 
             return response()->json([
                 'message' => 'Deleted'
@@ -76,7 +115,7 @@ class WishlistController extends Controller
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Токен не принадлежит пользователю который создал запись в wl'
+                    'message' => 'Какая-то ошибка'
                 ]
             ], 300);
         }

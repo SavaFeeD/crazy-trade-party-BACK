@@ -16,12 +16,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/token_error', function () {
-    return response()->json([
-        'message' => 'Ошибка токена'
-    ], 401);
-})->name('login');
-
 Route::post('users', [UserController::class, 'index'])->middleware('auth:api');
 Route::get('products', [ProductController::class, 'index']);
 Route::get('wishlist', [WishlistController::class, 'index'])->middleware('auth:api');
@@ -38,17 +32,21 @@ Route::get('get_user/{slug}', [UserController::class, 'get_user']);
 Route::get('product/getOne/{id}', [ProductController::class, 'getOne']);
 Route::get('product/add_viewCount', [ProductController::class, 'addViewsCount']);
 Route::post('product/store', [ProductController::class, 'store'])->middleware('auth:api');
+Route::post('product/delete', [ProductController::class, 'delete'])->middleware('auth:api');
 
 Route::post('wl/add', [WishlistController::class, 'add'])->middleware('auth:api');
 Route::get('wl/getUser/{slug}', [WishlistController::class, 'getWLForUser']);
+Route::get('wl/user/{slug}/{id_product}', [WishlistController::class, 'user_product_wishlist']);
 Route::get('wl/delete/{id}', [WishlistController::class, 'delete'])->middleware('auth:api');
 
 Route::get('buy/user/{slug}', [BuyProductController::class, 'user'])->middleware('auth:api');
+Route::get('buy/user/{slug}/{id_product}', [BuyProductController::class, 'user_product']);
 Route::post('buy/product', [BuyProductController::class, 'buy'])->middleware('auth:api');
 
-Route::get('rating/top/absolute', [RatingProductController::class, 'topAbsoluteProduct']);
+Route::get('rating/absolute', [RatingProductController::class, 'absoluteProduct']);
 
 Route::post('category/create', [CategoryController::class, 'create']);
+Route::get('category/{id}/all', [CategoryController::class, 'category']);
 
 Route::get('file/get/{name}', [FileController::class, 'get']);
 Route::post('file/upload', [FileController::class, 'store']);
