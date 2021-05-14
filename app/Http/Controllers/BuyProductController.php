@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AttrData;
-use App\Models\AttrName;
-use App\Models\AttrToProduct;
 use App\Models\BuyProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -100,7 +97,7 @@ class BuyProductController extends Controller
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Ошибка с SLUG пользователя'
+                    'message' => 'Не правильные данные пользователя'
                 ]
             ], 400);
         }
@@ -121,22 +118,61 @@ class BuyProductController extends Controller
                     ]
                 ], 404);
 
+
+            $buy_list = collect(BuyProduct::all())->filter(function ($item) use($user) {
+                return $item->user_id === $user->id;
+            });
+
+            $list = collect();
+            $check = false;
+            foreach ($buy_list->all() as $bl) {
+                $product_ = Product::where('id', $bl->product_id)->first();
+                if ($product_->id == $request->product_id) {
+                  $check = true;
+                }
+            }
+            if ($check) {
+              return response()->json([
+                  'status' => false,
+                  'body' => [
+                      'message' => "Вы уже купили этот товар"
+                  ]
+              ], 200);
+            }
+
+            if ($product->price > $user->crazy_coins) {
+              $difference = $product->price - $user->crazy_coins;
+              return response()->json([
+                  'status' => false,
+                  'body' => [
+                      'message' => "Не достаточно средств ($difference crazycoin)"
+                  ]
+              ], 200);
+            }
+
+            $user->crazy_coins -= $product->price;
+            $user->save();
+
             BuyProduct::create($request->all());
 
         } catch (NotFoundHttpException $error) {
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Вы не можете добавлять другим товары в wl!'
+                    'message' => 'Данные пользователя не совпадают'
                 ]
             ], 403);
         }
 
+        $balance = $user->crazy_coins;
         return response()->json([
             'status' => true,
             'body' => [
-                'message' => 'Покупка прошла успешно'
+                'message' => "Покупка прошла успешно",
+                'balance' => $balance,
+                'user' => $user
             ]
         ], 200);
+
     }
 }

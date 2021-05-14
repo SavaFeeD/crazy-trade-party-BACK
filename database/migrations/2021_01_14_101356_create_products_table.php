@@ -22,6 +22,8 @@ class CreateProductsTable extends Migration
             $table->integer('views_count')->default(0);
             $table->string('img')->nullable();
             $table->string('dataset')->default('http://127.0.0.1:8000/storage/upload/nQuQCMUCHpjt0KXl3yLXWEjzBZew7DfrBT8kLPLR.csv');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

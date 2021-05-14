@@ -19,7 +19,8 @@ class Product extends Model
         'price',
         'views_count',
         'img',
-        'dataset'
+        'dataset',
+        'user_id'
     ];
 
     static public function incrementViewsCount($request): \Illuminate\Http\JsonResponse

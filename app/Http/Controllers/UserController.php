@@ -29,7 +29,7 @@ class UserController extends Controller {
         return response()->json([
             'status' => true,
             'body' => [
-                'message' => 'Вы успешно загеристрировались'
+                'message' => 'Вы успешно зарегистрировались'
             ]
         ], 201);
     }
@@ -81,6 +81,31 @@ class UserController extends Controller {
                 'message' => 'Нет пользователя с таким слагом'
             ], 404);
         }
-
     }
+
+    public function addCoins($user_id, $add_value) {
+        try {
+            $user = User::where('id', $user_id)->first();
+
+            if (!$user)
+                throw new NotFoundHttpException;
+
+            $user->crazy_coins += $add_value;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'body' => [
+                  'message' => "Баланс пополнен на $add_value crazycoin",
+                  'user' => $user
+                ]
+            ], 200);
+        } catch (NotFoundHttpException $error) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Нет такого пользователя'
+            ], 404);
+        }
+    }
+
 }
