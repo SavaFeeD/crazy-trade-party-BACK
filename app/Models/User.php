@@ -71,7 +71,7 @@ class User extends Authenticatable
             return response()->json([
                 'status' => false,
                 'body' => [
-                    'message' => 'Не верный логин или пороль'
+                    'message' => 'Не верный email или пароль'
                 ]
             ]);
         }

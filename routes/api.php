@@ -28,11 +28,13 @@ Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'store']);
 Route::get('logout', [UserController::class, 'logout'])->middleware('auth:api');
 Route::get('get_user/{slug}', [UserController::class, 'get_user']);
+Route::get('user/add_coins/{user_id}/{add_value}', [UserController::class, 'addCoins']);
 
 Route::get('product/getOne/{id}', [ProductController::class, 'getOne']);
 Route::get('product/add_viewCount', [ProductController::class, 'addViewsCount']);
 Route::post('product/store', [ProductController::class, 'store'])->middleware('auth:api');
 Route::post('product/delete', [ProductController::class, 'delete'])->middleware('auth:api');
+Route::get('product/user/{slug}', [ProductController::class, 'getUserCreatedProduct'])->middleware('auth:api');
 
 Route::post('wl/add', [WishlistController::class, 'add'])->middleware('auth:api');
 Route::get('wl/getUser/{slug}', [WishlistController::class, 'getWLForUser']);

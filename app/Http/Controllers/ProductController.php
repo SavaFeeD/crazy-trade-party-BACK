@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Wishlist;
 use App\Models\ProductIsCategory;
 use App\Models\Category;
 use App\Models\BuyProduct;
@@ -10,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\Product\ProductStoreRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -32,12 +34,22 @@ class ProductController extends Controller
 
       $buy_count = count(BuyProduct::where('product_id', $id)->get());
 
+      $wl_count = count(Wishlist::where('product_id', $id)->get());
+
+      $creator = User::where('id', $product->user_id)->first();
+      $creator = [
+        'username' => $creator->username,
+        'slug' => $creator->slug
+      ];
+
       return response()->json([
           'status' => true,
           'body' => [
             'product' => $product,
             'category' => $category->all(),
-            'buy_count' => $buy_count
+            'buy_count' => $buy_count,
+            'wl_count' => $wl_count,
+            'creator' => $creator
           ]
       ], 200);
     }
@@ -55,7 +67,7 @@ class ProductController extends Controller
         ], 403);
 
       $data = collect($request->all())->filter(function ($value, $key) {
-        return $key != 'user_id' || $key != 'category';
+        return $key != 'category';
       });
 
       $mode = 'no-cat';
@@ -95,11 +107,20 @@ class ProductController extends Controller
         return response()->json([
             'status' => false,
             'body' => [
-                'message' => 'Вы не можете удалить товар'
+                'message' => 'Не правильные данные о пользователе'
             ]
         ], 403);
 
       $product = Product::find($request->product_id);
+
+      if ($user->id."" != $product->user_id)
+        return response()->json([
+            'status' => false,
+            'body' => [
+                'message' => 'Вы не можете удалить этот товар'
+            ]
+        ], 403);
+
       $product->delete();
 
       return response()->json([
@@ -108,5 +129,38 @@ class ProductController extends Controller
             "message" => "Вы удалили товар"
           ]
       ], 401);
+    }
+
+    public function getUserCreatedProduct($slug) {
+        try {
+            $validated = Validator::make(['slug' => $slug], [
+                'slug' => 'required'
+            ]);
+
+            if ($validated->fails())
+                throw new NotFoundHttpException;
+
+            $user = User::where('slug', $slug)->first();
+
+            if ($user === null)
+                throw new NotFoundHttpException;
+
+            $product_list = Product::where('user_id', $user->id)->get();
+
+            return response()->json([
+                'status' => true,
+                'body' => [
+                    'product_list' => $product_list
+                ]
+            ], 200);
+
+        } catch (NotFoundHttpException $error) {
+            return response()->json([
+                'status' => false,
+                'body' => [
+                    'message' => 'Не правильные данные пользователя'
+                ]
+            ], 400);
+        }
     }
 }
