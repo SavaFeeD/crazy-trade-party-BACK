@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\QueryException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -13,7 +14,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        QueryException::class
     ];
 
     /**
@@ -24,6 +25,7 @@ class Handler extends ExceptionHandler
     protected $dontFlash = [
         'password',
         'password_confirmation',
+        QueryException::class
     ];
 
     /**
@@ -33,9 +35,18 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        
     }
 
+    public function render($request, Throwable $e){
+      if($e instanceof QueryException){
+        return response()->json([
+          "status" => false,
+          "body" => [
+            "message" => $e->getMessage()
+          ]
+        ], 500);
+      }
+      return parent::render($request, $e);
+    }
 }
