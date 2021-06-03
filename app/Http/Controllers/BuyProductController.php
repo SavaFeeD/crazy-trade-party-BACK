@@ -153,6 +153,10 @@ class BuyProductController extends Controller
             $user->crazy_coins -= $product->price;
             $user->save();
 
+            $seller = User::where('id', $product->user_id)->first();
+            $seller->crazy_coins += $product->price;
+            $seller->save();
+
             BuyProduct::create($request->all());
 
         } catch (NotFoundHttpException $error) {
